@@ -4,12 +4,12 @@ This repository is an extension of the AWS CodeBuild Ruby environment with every
 
 Based on: https://github.com/aws/aws-codebuild-docker-images/tree/861780d9f6591bd71cbbe84a44375990118bc039/ubuntu/ruby/2.5.3
 
-## Features:
+## Added Features:
 - Node.js 10 LTS
 - Yarn
 
 # Setup
-
-- Create ECR Repository
-- Create CodeBuild Project
+1. Create ECR Repository
+2. Create CodeBuild Project]
+  - Ensure CodeBuild Role has necessary permissions for ECR access
   - Add REPOSITORY_URI to the ENV
