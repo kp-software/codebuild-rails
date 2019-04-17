@@ -1,15 +1,9 @@
 # AWS CodeBuild Rails Environment
 
-This repository is an extension of the AWS CodeBuild Ruby environment with everything needed to create production ready Rails builds.
+CodeBuild configuration for a Rails server container.
 
-Based on: https://github.com/aws/aws-codebuild-docker-images/tree/861780d9f6591bd71cbbe84a44375990118bc039/ubuntu/ruby/2.5.3
+Based on: https://medium.com/@lemuelbarango/ruby-on-rails-smaller-docker-images-bff240931332
 
 ## Added Features:
-- Node.js 10 LTS
-- Yarn
-
-# Setup
-1. Create ECR Repository
-2. Create CodeBuild Project]
-  - Ensure CodeBuild Role has necessary permissions for ECR access
-  - Add REPOSITORY_URI to the ENV
+- Includes buildspec.yml for CodeBuild
+- Use bundler version from application Gemfile.lock
