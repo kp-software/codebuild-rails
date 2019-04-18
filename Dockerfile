@@ -19,7 +19,7 @@ RUN apk update \
 
 COPY Gemfile* package.json yarn.lock ./
 
-# install rubygem
+# install rubygems
 COPY Gemfile Gemfile.lock $RAILS_ROOT/
 RUN gem install bundler --version $(cat Gemfile.lock | tail -1 | tr -d " ") \
     && bundle config --global frozen 1 \
@@ -31,12 +31,12 @@ RUN gem install bundler --version $(cat Gemfile.lock | tail -1 | tr -d " ") \
 
 RUN yarn install --production
 COPY . .
-RUN bin/rails assets:precompile
+RUN bundle exec rake assets:precompile
 
-# Remove folders not needed in resulting image
+# remove folders not needed in resulting image
 RUN rm -rf node_modules tmp/cache app/assets vendor/assets spec
 
-############### Build step done ###############
+############### Build stage done ###############
 
 FROM ruby:2.5.3-alpine
 
@@ -55,6 +55,7 @@ RUN apk update \
 
 COPY --from=build-env $RAILS_ROOT $RAILS_ROOT
 
+# install bundler
 RUN gem install bundler --version $(cat Gemfile.lock | tail -1 | tr -d " ")
 
 CMD bundle exec puma -C config/puma.rb

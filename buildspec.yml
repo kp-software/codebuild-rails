@@ -17,15 +17,27 @@ phases:
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
 
+      - echo Pulling the Docker images
+      - docker pull $REPOSITORY_URI:build-env || true
+      - docker pull $REPOSITORY_URI:latest || true
+
   build:
     commands:
       - echo Building the Docker image...
-      - docker build -t $REPOSITORY_URI:latest .
+      - docker build -t $REPOSITORY_URI:build-env --target build-env --cache-from $REPOSITORY_URI:build-env .
+      - docker build -t $REPOSITORY_URI:latest --cache-from $REPOSITORY_URI:build-env --cache-from $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
 
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
+      - docker push $REPOSITORY_URI:build-env
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
+
+      - echo Writing image definitions file...
+      - printf '[{"name":"mspcfo-staging","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+
+artifacts:
+  files: imagedefinitions.json
